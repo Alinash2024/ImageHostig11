@@ -23,7 +23,7 @@ class ImageHostingHandler(BaseHTTPRequestHandler):
         """Initialize the handler with routing for GET and POST requests."""
         self.get_routes = {
             '/upload': self.get_upload,
-            '/images': self.get_images,
+            '/api/images': self.get_images,
         }
         self.post_routes = {
             '/upload': self.post_upload,

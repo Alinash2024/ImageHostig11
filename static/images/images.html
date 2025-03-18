@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Галерея</title>
+    <meta charset="UTF-8">
     <style>
         .gallery {
             display: grid;
@@ -23,7 +24,7 @@
 <div class="gallery" id="gallery"></div>
 
 <script>
-    fetch('/images')
+    fetch('/api/images')
         .then(response => response.json())
         .then(data => {
         const container = document.getElementById('gallery');
