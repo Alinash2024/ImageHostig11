@@ -2,13 +2,181 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Upload</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>File Upload</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f0f2f5;
+      padding: 20px;
+    }
+
+    .upload-container {
+      background: white;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 480px;
+      text-align: center;
+    }
+
+    h1 {
+      color: #1a1a1a;
+      margin-bottom: 24px;
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    .upload-area {
+      border: 2px dashed #d1d5db;
+      border-radius: 8px;
+      padding: 32px;
+      margin-bottom: 24px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .upload-area:hover {
+      border-color: #3b82f6;
+      background: #f8fafc;
+    }
+
+    .upload-area.dragover {
+      border-color: #3b82f6;
+      background: #eff6ff;
+    }
+
+    #file-upload {
+      display: none;
+    }
+
+    .upload-label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .upload-icon {
+      width: 48px;
+      height: 48px;
+      color: #3b82f6;
+    }
+
+    .upload-text {
+      color: #6b7280;
+    }
+
+    .upload-text strong {
+      color: #3b82f6;
+      text-decoration: underline;
+    }
+
+    #file-name {
+      color: #374151;
+      margin-top: 8px;
+      font-size: 14px;
+    }
+
+    button[type="submit"] {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+
+    button[type="submit"]:hover {
+      background: #2563eb;
+    }
+
+    button[type="submit"]:disabled {
+      background: #93c5fd;
+      cursor: not-allowed;
+    }
+
+    @media (max-width: 480px) {
+      .upload-container {
+        padding: 24px;
+      }
+
+      .upload-area {
+        padding: 24px;
+      }
+    }
+  </style>
 </head>
 <body>
-<form method="POST" enctype="multipart/form-data" action="/upload">
-  <input type="file" id="file-upload" name="image" accept=".jpeg,.png,.gif,.jpg">
-  <label for="file-upload">Выберите файл</label>
-  <button type="submit">Загрузить</button>
-</form>
+<div class="upload-container">
+  <h1>Загрузите изображение</h1>
+  <form method="POST" enctype="multipart/form-data" action="/upload">
+    <div class="upload-area" id="drop-zone">
+      <label class="upload-label" for="file-upload">
+        <svg class="upload-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+        </svg>
+        <span class="upload-text">
+            Перетащите файл или <strong>выберите</strong>
+          </span>
+        <span id="file-name"></span>
+      </label>
+      <input type="file" id="file-upload" name="image" accept=".jpeg,.png,.gif,.jpg">
+    </div>
+    <button type="submit" disabled>Загрузить</button>
+  </form>
+</div>
+
+<script>
+  const fileUpload = document.getElementById('file-upload');
+  const fileName = document.getElementById('file-name');
+  const submitButton = document.querySelector('button[type="submit"]');
+  const dropZone = document.getElementById('drop-zone');
+
+  // Обработчик выбора файла
+  fileUpload.addEventListener('change', (e) => {
+    if(e.target.files.length) {
+      fileName.textContent = e.target.files[0].name;
+      submitButton.disabled = false;
+    }
+  });
+
+  // Drag and drop обработчики
+  dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.classList.add('dragover');
+  });
+
+  dropZone.addEventListener('dragleave', () => {
+    dropZone.classList.remove('dragover');
+  });
+
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('dragover');
+    const files = e.dataTransfer.files;
+    if(files.length) {
+      fileUpload.files = files;
+      fileName.textContent = files[0].name;
+      submitButton.disabled = false;
+    }
+  });
+</script>
 </body>
 </html>
